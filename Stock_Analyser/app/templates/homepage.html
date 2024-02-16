@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Tab</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+  
+  .search-container {
+    width: 300px;
+    margin: 50px auto;
+  }
+  
+  .search-tab {
+    display: flex;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-tab input[type="text"] {
+    flex-grow: 1;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .search-tab button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-tab button:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+    <form method = "POST">
+        {% csrf_token %}
+        <div class="search-container">
+            <div class="search-tab">
+              <input type="text" placeholder="Search..." name = "company">
+              <button type="submit">Search</button>
+            </div>
+          </div>
+          {% if error_message %}
+          <div class = "alert alert-danger" role="alert">
+            {{ error_message }}
+          </div>
+          {% else %}
+          {{ stock_data_html | safe }}
+          {% endif %}
+    </form>
+</body>
+</html>
