@@ -7,7 +7,7 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #FFFFFF;
   }
   
   .search-container {
@@ -32,36 +32,68 @@
   }
   
   .search-tab button {
-    background-color: #007bff;
-    color: #fff;
+    background-color:#DCDEE1;
+    color: black;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-  
-  .search-tab button:hover {
-    background-color: #0056b3;
+
+  .navbar {
+    background-color:#006193; /* Blue color */
+    color: #FFFFFF;
+    padding: 25px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    display: flex;
+    /*justify-content: space-between;*/ /* Align items to the right */
+  }
+
+  .logout-btn {
+    color: #FFFFFF;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 16px;
+  }
+
+  .error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
   }
 </style>
 </head>
 <body>
-    <form action="/news/" class="get_news" method = "POST">
-        {% csrf_token %}
-        <div class="search-container">
-            <div class="search-tab">
-              <input type="text" placeholder="Search..." name = "company">
-              <button type="submit">Search</button>
-            </div>
-          </div>
-          {% if error_message %}
-          <div class = "alert alert-danger" role="alert">
-            {{ error_message }}
-          </div>
-          {% else %}
-          {{ stock_data_html | safe }}
-          {% endif %}
+  <div class="navbar">
+    <div style="flex-grow: 1; text-align: center;">Stock News Sentiment Analysis</div>
+    <form action="/logout/" method="post">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
     </form>
+  </div>
+  <form action="/news/" class="get_news" method="POST">
+    {% csrf_token %}
+    <div class="search-container">
+      <div class="search-tab">
+        <input type="text" placeholder="Search..." name="company">
+        <button type="submit">Search</button>
+      </div>
+    </div>
+    {% if error_message %}
+    <div class="error-message" role="alert">
+      {{ error_message }}
+    </div>
+    {% else %}
+    {{ stock_data_html | safe }}
+    {% endif %}
+  </form>
 </body>
 </html>

@@ -91,7 +91,7 @@ def get_news(request):
         stock_data=stock_data[stock_data['Sentiment']!=0]
         stock_data=stock_data.reset_index(drop=True)
         stock_data['Sentiment'] = stock_data['Sentiment'].apply(replace_sentiment)
-        stock_data_html=stock_data.to_html()
+        stock_data_html=stock_data.to_html(index = False)
         return render(request,"homepage.html",{"stock_data_html":stock_data_html})
     return render(request,"homepage.html")
 
