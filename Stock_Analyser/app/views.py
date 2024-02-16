@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from .models import New
 
 import nltk
@@ -80,7 +80,7 @@ def get_news(request):
                 date_sentiments_list.append((article['title'],sentiment,published_at))
         date_sentiments_l = sorted(date_sentiments_list, key=lambda tup: tup[0],reverse = True)
         sent_list = list(date_sentiments.values())[0]
-        stock_data = pd.DataFrame(date_sentiments_list, columns=['Title', 'Sentiment', 'publishedAt'])
+        stock_data = pd.DataFrame(date_sentiments_list, columns=['Headline', 'Sentiment', 'PublishedAt'])
         def replace_sentiment(sentiment):
             if sentiment < 0:
                 return 'Negative'
@@ -92,8 +92,14 @@ def get_news(request):
         stock_data=stock_data.reset_index(drop=True)
         stock_data['Sentiment'] = stock_data['Sentiment'].apply(replace_sentiment)
         stock_data_html=stock_data.to_html(index = False)
+        stock_data_html = stock_data_html.replace('<th>', '<th style="text-align: center;">')
         return render(request,"homepage.html",{"stock_data_html":stock_data_html})
     return render(request,"homepage.html")
+
+
+def logout_user(request):
+    return redirect('/')
+
 
 # def homePage(request):
 #         # if request.method =="GET":
@@ -107,4 +113,4 @@ def get_news(request):
 #             search = request.POST.get('search')
 #             if search:
 #                 return render(request, "home.html")
-            
+        
