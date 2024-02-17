@@ -1,5 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import New
+# from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.hashers import make_password,check_password
 
 import nltk
 nltk.download('vader_lexicon')
@@ -13,7 +15,7 @@ from datetime import date, timedelta, datetime
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 sia = SentimentIntensityAnalyzer()
 
-pd.set_option('display.max_colwidth',1000)
+pd.set_option('display.max_colwidth',1100)
 
 NEWS_API_KEY = "f49400abecf94e12887066996c925a07"
 
@@ -31,13 +33,13 @@ def index(request):
                 return render(request,"homepage.html")
                 
             else:
-                return render(request, "login.html",{"error_message": "password is incorrect"})
+                return render(request, "login.html",{"error_message": "Password is Incorrect"})
         else:
-            return render(request, "login.html",{"error_message": "user not found"})
+            return render(request, "login.html",{"error_message": "User Not Found"})
     return render(request,"login.html")
 # Create your views here.
 
-
+# @login_required()
 def get_news(request):
     if request.method == "POST":
         company = request.POST.get('company')
@@ -61,7 +63,7 @@ def get_news(request):
     
         articles_list = articles['articles']
         if not articles_list:
-            error_message = "No Stock news found for {}".format(company)
+            error_message = "No Stock News found for {}".format(company)
             return render(request,"homepage.html", {"error_message": error_message})
         articles_list = sorted(articles_list, key=lambda x: datetime.strptime(x['publishedAt'], '%Y-%m-%dT%H:%M:%SZ'), reverse=True)
         date_sentiments = {}
