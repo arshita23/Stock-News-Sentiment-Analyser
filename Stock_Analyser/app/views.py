@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from .models import New
 # from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.hashers import make_password,check_password
-
+# print(make_password('23Sona81*#'))
 import nltk
 nltk.download('vader_lexicon')
 
@@ -39,13 +39,13 @@ def index(request):
     return render(request,"login.html")
 # Create your views here.
 
-# @login_required()
+
 def get_news(request):
     if request.method == "POST":
         company = request.POST.get('company')
         keywrd= company+" stock"
         s1 = datetime.now().date()
-        startd = s1 - timedelta(days=2)
+        startd = s1 - timedelta(days=5)
         newsapi = NewsApiClient(api_key = NEWS_API_KEY)
         
         if type(startd) == str:
@@ -95,7 +95,7 @@ def get_news(request):
         stock_data['Sentiment'] = stock_data['Sentiment'].apply(replace_sentiment)
         stock_data_html=stock_data.to_html(index = False)
         stock_data_html = stock_data_html.replace('<th>', '<th style="text-align: center;">')
-        return render(request,"homepage.html",{"stock_data_html":stock_data_html})
+        return render(request,"homepage.html",{"company_name":company,"stock_data_html":stock_data_html})
     return render(request,"homepage.html")
 
 
