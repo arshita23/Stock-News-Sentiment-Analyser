@@ -1,8 +1,10 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import New
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.hashers import make_password,check_password
-# print(make_password('23Sona81*#'))
+from credentials import views
+
+from django.contrib.auth.hashers import make_password,check_password
+# print(make_password('1234'))
+# print("cool")
 import nltk
 nltk.download('vader_lexicon')
 
@@ -28,10 +30,12 @@ def index(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         data = New.objects.filter(email = email).first()
+        # user = New.objects.get(email=email)
         if data:
-            if (password == data.password):
+            if check_password(password,data.password):
+            # if data:
+            # if (password == data.password):
                 return render(request,"homepage.html")
-                
             else:
                 return render(request, "login.html",{"error_message": "Password is Incorrect"})
         else:

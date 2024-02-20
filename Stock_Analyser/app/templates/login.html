@@ -8,13 +8,15 @@
         /* Font family */
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         /* Navbar styles */
         .navbar {
-            background-color:#006193; /* Blue color */
+            background-color: #006193; /* Blue color */
             color: #FFFFFF;
-            padding: 25px;
+            padding: 35px;
             text-align: center;
             font-size: 24px;
             font-weight: bold;
@@ -22,13 +24,13 @@
             margin-bottom: 20px;
         }
 
-
-
         /* Main container styles */
         .main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center; /* Center vertically */
+            height: calc(100vh - 200px); /* Adjusted height */
         }
 
         /* Error message styles */
@@ -37,7 +39,6 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
-
         }
 
         /* Login form styles */
