@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import New
 from credentials import views
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from django.contrib.auth.hashers import make_password,check_password
 # print(make_password('1234'))
@@ -11,6 +12,7 @@ nltk.download('vader_lexicon')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 
 from newsapi import NewsApiClient
 from datetime import date, timedelta, datetime
@@ -23,27 +25,71 @@ NEWS_API_KEY = "f49400abecf94e12887066996c925a07"
 
 newsapi = NewsApiClient(api_key = NEWS_API_KEY)
 
+# from Stock_Analyser.views import session_login_required
 
+
+from functools import wraps
+
+def session_login_required(function=None):
+    def decorator(view_func):
+        @wraps(view_func)
+        def f(request, *args, **kwargs):
+            token = request.session.get('token', False)
+
+            if token:
+                access_token = AccessToken(token)
+                print(access_token)
+                user = access_token.payload.get('user_id')
+                print(user)
+                return view_func(request, *args, **kwargs)
+            
+            return redirect('/')
+        
+        return f
+    if function is not None:
+        return decorator(function)
+    return decorator
 
 def index(request):
     if request.method=="POST":
         email = request.POST.get('email')
         password = request.POST.get('password')
-        data = New.objects.filter(email = email).first()
-        # user = New.objects.get(email=email)
-        if data:
-            if check_password(password,data.password):
-            # if data:
-            # if (password == data.password):
-                return render(request,"homepage.html")
-            else:
-                return render(request, "login.html",{"error_message": "Password is Incorrect"})
-        else:
-            return render(request, "login.html",{"error_message": "User Not Found"})
+
+        try:
+            if 'token' in request.session: 
+                
+                return render(request, "homepage.html")
+            user = New.objects.get(email=email)
+
+        # data = New.objects.filter(email = email).first()
+        
+            if user is not None:
+                if check_password(password,user.password):
+                    refresh= RefreshToken.for_user(user)
+                    token=str(refresh.access_token)
+                    request.session['token']=token
+                else:
+                    return render(request, "login.html",{"error_message": "Password is Incorrect"})                    
+
+            else: 
+                return render(request, "login.html",{"error_message": "User Not Found"}) 
+            
+        except Exception as e:
+            print(e)
+
+
+        #     if check_password(password,data.password):
+        #     # if data:
+        #     # if (password == data.password):
+        #         return render(request,"homepage.html")
+        #     else:
+        #         return render(request, "login.html",{"error_message": "Password is Incorrect"})
+        # else:
+        #     return render(request, "login.html",{"error_message": "User Not Found"})
     return render(request,"login.html")
 # Create your views here.
 
-
+@session_login_required
 def get_news(request):
     if request.method == "POST":
         company = request.POST.get('company')
@@ -104,6 +150,7 @@ def get_news(request):
 
 
 def logout_user(request):
+    del request.session['token']
     return redirect('/')
 
 
