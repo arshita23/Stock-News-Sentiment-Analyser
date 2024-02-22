@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import sys
 sys.stdout = sys.stderr
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-9z%049t1mw5f_ygmo5@v4oa1wju&r%!!c*x)pjesyy*(s!_c-h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app','.now.sh']
 
 
 # Application definition
@@ -129,15 +130,33 @@ WSGI_APPLICATION = 'Stock_Analyser.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+# const pool = new Pool({
+#   connectionString: process.env.POSTGRES_URL ,
+# })
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Stock_News',
-        'USER': 'arshita',
-        'PASSWORD': '23Sona81*#'
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '*6DEB4Ad3eFGBEEFBD2FeGb-D36c4Cce',
+        'HOST':'viaduct.proxy.rlwy.net',
+        'PORT':'19966',
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'ep-lively-smoke-a45cx7lk-pooler.us-east-1.aws.neon.tech',
+#         'NAME': 'verceldb',
+#         'USER': 'default',
+#         'PASSWORD': 'anROhZvK76Ab'
+#     }
+# }
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "ui/static")]
+# STATIC_URL = "static/"
+# STATIC_ROOT = os.path.join(BASE_DIR, "ui/staticfiles")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -179,3 +198,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATICFILES_DIRS = os.path.join(BASE_DIR,'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
