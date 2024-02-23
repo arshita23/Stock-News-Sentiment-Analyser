@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-9z%049t1mw5f_ygmo5@v4oa1wju&r%!!c*x)pjesyy*(s!_c-h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app','.now.sh']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -124,7 +124,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Stock_Analyser.wsgi.application'
+WSGI_APPLICATION = 'Stock_Analyser.wsgi.app'
 
 
 # Database
@@ -135,16 +135,16 @@ WSGI_APPLICATION = 'Stock_Analyser.wsgi.application'
 #   connectionString: process.env.POSTGRES_URL ,
 # })
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '*6DEB4Ad3eFGBEEFBD2FeGb-D36c4Cce',
-        'HOST':'viaduct.proxy.rlwy.net',
-        'PORT':'19966',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'EegG52bBffEbf*fDCAcEg62B1FGa35Af',
+#         'HOST':'viaduct.proxy.rlwy.net',
+#         'PORT':'18145',
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -200,3 +200,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = os.path.join(BASE_DIR,'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+MEDIA_URLS='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
