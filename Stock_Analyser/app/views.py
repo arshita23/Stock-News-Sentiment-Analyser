@@ -54,28 +54,26 @@ def index(request):
     if request.method=="POST":
         email = request.POST.get('email')
         password = request.POST.get('password')
-
         try:
             if 'token' in request.session: 
-                
                 return render(request, "homepage.html")
+            
             user = New.objects.get(email=email)
-
         # data = New.objects.filter(email = email).first()
-        
             if user is not None:
                 if check_password(password,user.password):
                     refresh= RefreshToken.for_user(user)
                     token=str(refresh.access_token)
                     request.session['token']=token
+                    return render(request, "homepage.html")
                 else:
-                    return render(request, "login.html",{"error_message": "Password is Incorrect"})                    
+                    return render(request, "login.html",{"error_message": "Password not found"})                    
 
             else: 
-                return render(request, "login.html",{"error_message": "User Not Found"}) 
+                return render(request, "login.html",{"error_message": "User not found"}) 
             
-        except Exception as e:
-            print(e)
+        except New.DoesNotExist:
+            return render(request, "login.html",{"error_message": "User not found"}) 
 
 
         #     if check_password(password,data.password):
@@ -154,16 +152,4 @@ def logout_user(request):
     return redirect('/')
 
 
-# def homePage(request):
-#         # if request.method =="GET":
-#         #     return render(request, "home.html")
-        
-#         # if request.method =="POST":
-#         #     return render(request, "home.html")
-        
-        
-#         if request.method == "POST":
-#             search = request.POST.get('search')
-#             if search:
-#                 return render(request, "home.html")
         

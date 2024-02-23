@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import sys
 sys.stdout = sys.stderr
+import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,14 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9z%049t1mw5f_ygmo5@v4oa1wju&r%!!c*x)pjesyy*(s!_c-h'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-9z%049t1mw5f_ygmo5@v4oa1wju&r%!!c*x)pjesyy*(s!_c-h')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
-
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +74,7 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -124,39 +128,29 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Stock_Analyser.wsgi.app'
+WSGI_APPLICATION = 'Stock_Analyser.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-# const pool = new Pool({
-#   connectionString: process.env.POSTGRES_URL ,
-# })
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://postgre:postgre@localhost:5432/postgre',
+        conn_max_age=600
+    )
+}
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'railway',
-#         'USER': 'postgres',
-#         'PASSWORD': 'EegG52bBffEbf*fDCAcEg62B1FGa35Af',
-#         'HOST':'viaduct.proxy.rlwy.net',
-#         'PORT':'18145',
+#         'NAME': 'Stock_News',
+#         'USER': 'arshita',
+#         'PASSWORD': '23Sona81*#'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'ep-lively-smoke-a45cx7lk-pooler.us-east-1.aws.neon.tech',
-#         'NAME': 'verceldb',
-#         'USER': 'default',
-#         'PASSWORD': 'anROhZvK76Ab'
-#     }
-# }
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "ui/static")]
-# STATIC_URL = "static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, "ui/staticfiles")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -192,13 +186,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATICFILES_DIRS = os.path.join(BASE_DIR,'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
-MEDIA_URLS='/media/'
-MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+LOGIN_URL = '/'
